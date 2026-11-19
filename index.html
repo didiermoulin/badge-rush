@@ -1,10 +1,18 @@
 <!DOCTYPE html>
+<!--
+  Badge Rush
+  © 2026 Digitevent. All rights reserved.
+  Author: Didier Moulin.
+  No part of this game (code, graphics, sounds, text) may be copied, modified or redistributed without Digitevent's written permission.
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#63B8F3">
 <title>Badge Rush</title>
+<meta name="author" content="Didier Moulin">
+<meta name="copyright" content="© 2026 Digitevent. All rights reserved.">
 <meta name="description" content="Scan the tickets, hand out the badges, beat the clock! How many guests can you check in in 45 seconds?">
 <!-- Link previews (LinkedIn, Slack, WhatsApp, X…). Crawlers need ABSOLUTE urls.
      og-image.png (1200×630) sits next to this file. -->
@@ -271,6 +279,8 @@ button{font:inherit;color:inherit}
   .board li{padding:.15em .7em .15em .4em;border-width:2.5px}
   #screen-board .panel{gap:8px}
 }
+.credit{position:absolute;left:0;right:0;bottom:calc(8px + var(--sb));margin:0;text-align:center;font-size:11px;font-weight:800;letter-spacing:.02em;color:rgba(27,27,38,.62);pointer-events:none}
+@media (max-height:480px){.credit{left:auto;right:calc(12px + var(--sr));bottom:calc(6px + var(--sb));text-align:right;max-width:30vw}}
 .ribbon{position:absolute;top:14px;left:-6px;z-index:2;background:var(--red);border:3px solid var(--ink);color:#fff;font-weight:900;font-size:max(13px,calc(2.2*var(--u)));letter-spacing:.06em;text-transform:uppercase;padding:.35em .9em .35em 1em;border-radius:0 999px 999px 0;transform:rotate(-4deg);box-shadow:0 4px 0 var(--ink);animation:bump .5s ease-out 2}
 </style>
 </head>
@@ -338,6 +348,7 @@ button{font:inherit;color:inherit}
     </div>
     <p class="pitch pill">Scan the tickets, hand out the badges, beat the clock!</p>
     <button id="btn-top" type="button" class="pill top-pill hidden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5H4.500a3 3 0 0 0 3 4.500M17 5h2.500a3 3 0 0 1-3 4.500" fill="none" stroke="#1B1B26" stroke-width="2" stroke-linecap="round"/><path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="#FFCC1E" stroke="#1B1B26" stroke-width="2" stroke-linejoin="round"/><path d="M12 13v3.500M8 21h8l-.800-4.500H8.800z" fill="#FFCC1E" stroke="#1B1B26" stroke-width="2" stroke-linejoin="round"/></svg><span id="top-text">This week's top 10</span></button>
+    <p class="credit">© 2026 Digitevent · Game by Didman</p>
     <button id="btn-play" type="button" class="btn primary big"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 2.500v15a1 1 0 0 0 1.500.900l13-7.500a1 1 0 0 0 0-1.800l-13-7.500A1 1 0 0 0 4 2.500z" fill="#1B1B26"/></svg>Play</button>
   </section>
 
