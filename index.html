@@ -5,6 +5,22 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#63B8F3">
 <title>Badge Rush</title>
+<meta name="description" content="Scan the tickets, hand out the badges, beat the clock! How many guests can you check in in 90 seconds?">
+<!-- Link previews (LinkedIn, Slack, WhatsApp, X…). Crawlers need ABSOLUTE urls.
+     og-image.png (1200×630) sits next to this file. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Badge Rush">
+<meta property="og:title" content="Badge Rush: how many guests can you check in in 90 seconds?">
+<meta property="og:description" content="Scan the tickets, hand out the badges, beat the clock! Think you can beat the Badge Master?">
+<meta property="og:url" content="https://didiermoulin.github.io/badge-rush/">
+<meta property="og:image" content="https://didiermoulin.github.io/badge-rush/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Badge Rush: a swinging All Access badge above a busy congress registration desk">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Badge Rush: how many guests can you check in in 90 seconds?">
+<meta name="twitter:description" content="Scan the tickets, hand out the badges, beat the clock! Think you can beat the Badge Master?">
+<meta name="twitter:image" content="https://didiermoulin.github.io/badge-rush/og-image.png">
 <style>
 :root{
   --ink:#1B1B26;--ink-soft:#4B4F6B;--cream:#FFF3D6;--sky:#63B8F3;
@@ -162,6 +178,13 @@ button{font:inherit;color:inherit}
 .res-rows div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;background:var(--cream);border:3px solid var(--ink);border-radius:14px;padding:.4em .9em;font-weight:800;font-size:max(14px,calc(2.3*var(--u)))}
 .res-rows b{font-weight:900;font-size:1.15em;font-variant-numeric:tabular-nums}
 .btn-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 12px;margin:4px 0 6px}
+.btn.share{display:inline-flex;align-items:center;gap:.4em;background:#DDEBFF}
+.btn.share svg{width:1em;height:1em;flex:none}
+.btn.share.done{background:#A9F5B7}
+@media (max-height:480px){                       /* landscape phones: keep the three buttons on one line */
+  #screen-results .btn-row{flex-wrap:nowrap;gap:8px}
+  #screen-results .btn-row .btn{font-size:15px;padding:.55em .85em;white-space:nowrap}
+}
 .ribbon{position:absolute;top:14px;left:-6px;z-index:2;background:var(--red);border:3px solid var(--ink);color:#fff;font-weight:900;font-size:max(13px,calc(2.2*var(--u)));letter-spacing:.06em;text-transform:uppercase;padding:.35em .9em .35em 1em;border-radius:0 999px 999px 0;transform:rotate(-4deg);box-shadow:0 4px 0 var(--ink);animation:bump .5s ease-out 2}
 </style>
 </head>
@@ -280,6 +303,7 @@ button{font:inherit;color:inherit}
       </div>
       <div class="btn-row">
         <button id="btn-again" type="button" class="btn primary">Play again</button>
+        <button id="btn-share" type="button" class="btn share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.500v11M7.500 8L12 3.500 16.500 8" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11.500H6.500a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5.500a2 2 0 0 0-2-2H16" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="share-label">Share my score</span></button>
         <button id="btn-change" type="button" class="btn">Change character</button>
       </div>
     </div>
@@ -1186,12 +1210,25 @@ const PRINT_TIME = 0.85;      // seconds to print one badge
 const BADGE_W = 64, BADGE_H = 84;
 const SAFE_W = 460, SAFE_H = 640;   // the area that is always visible, in scene units
 
+// The best score is kept in the browser, so it survives a reload. Storage can be blocked
+// (private mode, sandboxed iframe): the game then simply keeps the record for this visit only.
+const Best = {
+  KEY: 'badgeRush.best',
+  load() {
+    try { const v = localStorage.getItem(this.KEY); return v === null ? null : Math.max(0, parseInt(v, 10) || 0); }
+    catch (e) { return null; }
+  },
+  save(n) { try { localStorage.setItem(this.KEY, String(n)); } catch (e) { /* storage unavailable */ } },
+};
+const savedBest = Best.load();
+
 const G = {
   screen: 'title',            // title | select | howto | countdown | playing | timeup | results
   attract: true,              // background mode behind the menus: guests stroll into the hall
   showPlayer: false,
   char: 'luc',
-  t: 0, time: ROUND_TIME, score: 0, missed: 0, best: 0, rounds: 0, served: 0, howtoSeen: false, lastSec: -1,
+  t: 0, time: ROUND_TIME, score: 0, missed: 0, best: savedBest || 0, rounds: 0, served: 0, howtoSeen: false, lastSec: -1,
+  hasRecord: savedBest !== null,  // at least one finished round on this device: "New best!" only means something then
   guests: [], current: null, badge: null,
   search: null,               // guest list open for a guest without a QR code: { guest, options, lock }
   skipNoQR: 0, nameSeen: 0, nameDone: 0, appHide: 0,
@@ -2336,8 +2373,12 @@ function rankFor(n) {
 }
 
 function showResults() {
-  const firstRound = G.rounds <= 1, isBest = G.score > G.best;
+  // "New best!" needs an earlier record to beat, from this visit or a previous one
+  const isBest = G.score > G.best, newBest = isBest && G.hasRecord;
   if (isBest) G.best = G.score;
+  G.hasRecord = true;
+  Best.save(G.best);
+  resetShare();
   const name = PLAYERS[G.char].name;
   $('#res-title').textContent = G.score >= 15 ? 'Nice work, ' + name + '!' : G.score > 0 ? 'Shift over, ' + name + '!' : 'Rough shift, ' + name + '!';
   $('#res-score').textContent = G.score;
@@ -2345,10 +2386,58 @@ function showResults() {
   $('#res-rank').textContent = rankFor(G.score);
   $('#res-best').textContent = G.best;
   $('#res-missed').textContent = G.missed;
-  $('#newbest').classList.toggle('hidden', !(isBest && !firstRound));
+  $('#newbest').classList.toggle('hidden', !newBest);
   $('#res-portrait').dataset.char = G.char;
   setScreen('results');
-  if (isBest && !firstRound) Sound.fanfare(); else Sound.select();
+  if (newBest) Sound.fanfare(); else Sound.select();
+}
+
+/* share the score: the phone's share sheet on touch devices, the clipboard elsewhere */
+const shareBtn = $('#btn-share'), shareLabel = $('#share-label');
+const SHARE_LABEL = shareLabel.textContent;
+let shareTimer = 0;
+
+function shareText() {
+  const n = G.score;
+  return n + (n === 1 ? ' guest' : ' guests') + ' in ' + ROUND_TIME + ' seconds, ' + rankFor(n) + '. Think you can beat that?';
+}
+function shareUrl() {                          // the page address without #test or tracking parameters
+  return /^https?:$/.test(location.protocol) ? location.origin + location.pathname : '';
+}
+function resetShare() {
+  clearTimeout(shareTimer);
+  shareBtn.classList.remove('done');
+  shareLabel.textContent = SHARE_LABEL;
+}
+function shareFeedback(text) {
+  shareLabel.textContent = text;
+  shareBtn.classList.add('done');
+  announceEl.textContent = text;
+  clearTimeout(shareTimer);
+  shareTimer = setTimeout(resetShare, 2200);
+}
+function copyText(text) {
+  if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+  return new Promise((resolve, reject) => {     // older browsers and plain-http pages
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.setAttribute('readonly', '');
+    ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none';
+    document.body.appendChild(ta); ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    ta.remove();
+    if (ok) resolve(); else reject(new Error('copy failed'));
+  });
+}
+async function shareScore() {
+  const text = shareText(), url = shareUrl();
+  const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+  if (touch && navigator.share) {
+    try { await navigator.share(url ? { title: 'Badge Rush', text, url } : { title: 'Badge Rush', text }); return; }
+    catch (e) { if (e && e.name === 'AbortError') return; }   // closed the share sheet: nothing to do
+  }
+  try { await copyText(url ? text + ' ' + url : text); shareFeedback('Copied!'); }
+  catch (e) { shareFeedback('Could not copy'); }
 }
 
 /* character portraits (select screen and results) */
@@ -2405,6 +2494,7 @@ for (const card of document.querySelectorAll('.card')) {
 }
 $('#btn-go').addEventListener('click', () => { Sound.click(); G.howtoSeen = true; startCountdown(); });
 $('#btn-again').addEventListener('click', () => { Sound.click(); setupRound(); startCountdown(); });
+shareBtn.addEventListener('click', () => { Sound.click(); shareScore(); });
 $('#btn-change').addEventListener('click', () => {
   Sound.click();
   closeSearch();
