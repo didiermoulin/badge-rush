@@ -50,6 +50,26 @@ button{font:inherit;color:inherit}
 #chip-time.low{background:#FFD3CD;animation:pulse .5s ease-in-out infinite alternate}
 #chip-time.low .chip-value{color:var(--red)}
 #chip-score.bump{animation:bump .3s ease-out}
+#chip-combo{padding-right:10px;transition:background .2s}
+#chip-combo .chip-value{color:var(--ink-soft)}
+#chip-combo.hot{background:#FFE7B8}
+#chip-combo.hot .chip-value{color:#E8590C}
+#chip-combo[data-level="4"],#chip-combo[data-level="5"]{background:#FFC98A}
+#chip-combo.up{animation:combo-up .45s ease-out}
+#chip-combo.break{animation:combo-break .4s ease-out}
+@keyframes combo-up{30%{transform:scale(1.28) rotate(-4deg)}60%{transform:scale(.96)}}
+@keyframes combo-break{0%{background:#FFD3CD}20%{transform:translateX(-7px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.pips{display:flex;gap:3px;margin-left:2px;align-self:center}
+.pips i{width:7px;height:7px;border-radius:50%;background:#D5DBEE;border:2px solid var(--ink)}
+.pips i.on{background:#FF9E3D}
+@media (max-width:430px){.chip svg{display:none}.chip{padding-left:10px}#hud{gap:6px}}
+@media (max-width:400px){
+  #hud{gap:5px}
+  .chip{padding:2px 8px;border-radius:13px}
+  .chip-label{font-size:8.5px;letter-spacing:.04em}
+  .chip-value{font-size:18px}
+  .pips{gap:2px}.pips i{width:5px;height:5px;border-width:1.5px}
+}
 @keyframes pulse{to{transform:scale(1.07)}}
 @keyframes bump{40%{transform:scale(1.18)}}
 
@@ -162,6 +182,17 @@ button{font:inherit;color:inherit}
 .note{margin:0;width:100%;display:flex;align-items:center;gap:10px;text-align:left;background:#DDEBFF;border:3px solid var(--ink);border-radius:16px;padding:8px 12px;font-size:clamp(12.500px,2vmin,15.500px);font-weight:700;line-height:1.25}
 .note svg{width:clamp(32px,7vmin,44px);height:clamp(32px,7vmin,44px);flex:none}
 .note b{font-weight:900}
+.legend{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:6px 8px}
+.legend li{display:flex;align-items:center;gap:.35em;background:var(--c);color:#fff;border:3px solid var(--ink);border-radius:999px;padding:.2em .75em;font-weight:900;font-size:clamp(11px,1.9vmin,14px);letter-spacing:.04em}
+.legend b{background:#fff;color:var(--ink);border-radius:999px;padding:0 .45em;font-size:.95em}
+@media (max-height:700px){                        /* short screens: tighter how-to cards so "Let's go!" stays in view */
+  #screen-howto .panel{gap:8px;padding-top:12px;padding-bottom:12px}
+  .steps{gap:8px}
+  .steps li{padding:6px 8px;gap:4px}
+  .steps svg{width:clamp(30px,7vmin,46px);height:clamp(30px,7vmin,46px)}
+  .note{padding:6px 10px}
+  .legend li{padding:.1em .6em;border-width:2.5px}
+}
 @media (max-width:520px) and (orientation:portrait){
   .steps{grid-template-columns:1fr}
   .steps li{flex-direction:row;text-align:left;gap:12px;padding:10px 14px 10px 18px}
@@ -174,7 +205,7 @@ button{font:inherit;color:inherit}
 .res-big{font-size:calc(13*var(--u));font-weight:900;line-height:1.05;color:var(--yellow);text-shadow:var(--ol);font-variant-numeric:tabular-nums;letter-spacing:.03em}
 .big-label{font-size:max(13px,calc(2.3*var(--u)));font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-soft)}
 .rank{margin-top:calc(.8*var(--u));background:var(--blue);border:3px solid var(--ink);color:#fff;font-weight:900;font-size:max(13px,calc(2.2*var(--u)));padding:.3em .9em;border-radius:999px}
-.res-rows{width:100%;max-width:380px;display:flex;flex-direction:column;gap:7px}
+.res-rows{width:100%;max-width:440px;display:grid;grid-template-columns:1fr 1fr;gap:7px}
 .res-rows div{display:flex;justify-content:space-between;align-items:baseline;gap:12px;background:var(--cream);border:3px solid var(--ink);border-radius:14px;padding:.4em .9em;font-weight:800;font-size:max(14px,calc(2.3*var(--u)))}
 .res-rows b{font-weight:900;font-size:1.15em;font-variant-numeric:tabular-nums}
 .btn-row{display:flex;flex-wrap:wrap;justify-content:center;gap:12px 12px;margin:4px 0 6px}
@@ -199,7 +230,12 @@ button{font:inherit;color:inherit}
     </div>
     <div class="chip" id="chip-score">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 2l6 8 6-8" fill="none" stroke="#1B1B26" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 2l6 8 6-8" fill="none" stroke="#E5352B" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"/><rect x="6" y="9" width="20" height="21" rx="4" fill="#fff" stroke="#1B1B26" stroke-width="3"/><path d="M11 20l3.500 3.500L21 17" fill="none" stroke="#3DB84B" stroke-width="3.400" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="chip-text"><span class="chip-label">Checked in</span><span class="chip-value" id="score">0</span></div>
+      <div class="chip-text"><span class="chip-label">Score</span><span class="chip-value" id="score">0</span></div>
+    </div>
+    <div class="chip" id="chip-combo">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M17.500 2.500L6 18h8.500l-2.500 11.500L25.500 13H16.500z" fill="#FF9E3D" stroke="#1B1B26" stroke-width="2.800" stroke-linejoin="round"/></svg>
+      <div class="chip-text"><span class="chip-label">Combo</span><span class="chip-value" id="combo">×1</span></div>
+      <span class="pips" id="pips" aria-hidden="true"></span>
     </div>
   </div>
 
@@ -279,7 +315,8 @@ button{font:inherit;color:inherit}
         <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M8 5h32a5 5 0 0 1 5 5v18a5 5 0 0 1-5 5H24l-9 10v-10H8a5 5 0 0 1-5-5V10a5 5 0 0 1 5-5z" fill="#fff" stroke="#1B1B26" stroke-width="3" stroke-linejoin="round"/><rect x="10" y="13" width="28" height="4.500" rx="2.250" fill="#1B1B26"/><rect x="10" y="21" width="18" height="4.500" rx="2.250" fill="#E5352B"/></svg>
         <span><b>No QR code?</b> About two guests in five forgot it and tell you their name instead. Tap that name in the guest list.</span>
       </p>
-      <p class="tip">Guests <b>lose patience</b>, so be quick. You have 45 seconds!</p>
+      <ul class="legend" id="legend" aria-label="Points per badge"></ul>
+      <p class="tip">Guests lose patience <b>fast</b>, VIPs even faster. Serve them <b>in a row</b> for a ×2, ×3 combo. Printer jam? <b>Tap it!</b></p>
       <button id="btn-go" type="button" class="btn primary">Let's go!</button>
     </div>
   </section>
@@ -293,13 +330,15 @@ button{font:inherit;color:inherit}
         <div class="res-main">
           <h2 id="res-title">Nice work!</h2>
           <div class="res-big" id="res-score">0</div>
-          <div class="big-label" id="res-label">guests checked in</div>
+          <div class="big-label" id="res-label">points</div>
           <div class="rank" id="res-rank">Desk Rookie</div>
         </div>
       </div>
       <div class="res-rows">
-        <div><span>Best score so far</span><b id="res-best">0</b></div>
-        <div><span>Left without a badge</span><b id="res-missed">0</b></div>
+        <div><span>Checked in</span><b id="res-guests">0</b></div>
+        <div><span>Best combo</span><b id="res-combo">×1</b></div>
+        <div><span>Walked off</span><b id="res-missed">0</b></div>
+        <div><span>Best score</span><b id="res-best">0</b></div>
       </div>
       <div class="btn-row">
         <button id="btn-again" type="button" class="btn primary">Play again</button>
@@ -505,6 +544,29 @@ const Sound = (() => {
       tone(1047, { at: 0.52, dur: 0.7, vol: 0.14 });
     },
     fanfare() { [523, 659, 784, 1047].forEach((f, i) => tone(f, { type: 'triangle', at: i * 0.11, dur: i === 3 ? 0.55 : 0.17, vol: 0.17 })); },
+    // combo reached a new multiplier: a quick run that climbs higher with each level
+    comboUp(level) {
+      const base = 523 * Math.pow(2, (level - 2) / 6);
+      [1, 1.26, 1.5, 2].forEach((k, i) => tone(base * k, { type: 'square', at: i * 0.055, dur: 0.12, vol: 0.05 }));
+      tone(base * 2, { at: 0.22, dur: 0.3, vol: 0.12 });
+    },
+    // combo lost: a falling slide
+    comboBreak() { tone(880, { type: 'triangle', at: 0.12, dur: 0.38, vol: 0.12, to: 220 }); },
+    // a special guest at the desk: two bright notes, a sparkle for a VIP
+    special(vip) {
+      tone(1175, { dur: 0.09, vol: 0.1 }); tone(1568, { at: 0.08, dur: 0.14, vol: 0.1 });
+      if (vip) [2093, 2637, 3136].forEach((f, i) => tone(f, { at: 0.18 + i * 0.05, dur: 0.12, vol: 0.06 }));
+    },
+    vipDone() { [1568, 2093, 2637, 3136].forEach((f, i) => tone(f, { at: 0.2 + i * 0.045, dur: 0.16, vol: 0.06 })); },
+    // printer jam: a grinding crunch and a two-tone alarm
+    jam() {
+      noise({ dur: 0.32, vol: 0.22, freq: 380, to: 160, q: 1.4 });
+      tone(110, { type: 'sawtooth', dur: 0.3, vol: 0.08, to: 70 });
+      [0.3, 0.52].forEach((at) => { tone(988, { type: 'square', at, dur: 0.1, vol: 0.05 }); tone(740, { type: 'square', at: at + 0.11, dur: 0.1, vol: 0.05 }); });
+    },
+    // one tap on the jammed printer: a thump that rises as it comes loose
+    jamTap(k) { tone(150 + 140 * k, { type: 'triangle', dur: 0.08, vol: 0.2, to: 90 + 100 * k }); noise({ dur: 0.06, vol: 0.08, freq: 1800, q: 1 }); },
+    jamFixed() { noise({ dur: 0.12, vol: 0.1, freq: 900, to: 2600, q: 0.8 }); tone(784, { dur: 0.1, vol: 0.12 }); tone(1175, { at: 0.08, dur: 0.18, vol: 0.12 }); },
   };
 })();
 
@@ -534,13 +596,37 @@ function cord(c, pts, w, color, edge) {
 const FIRST = ['Emma', 'Liam', 'Sofia', 'Noah', 'Mia', 'Lucas', 'Chloe', 'Ethan', 'Zoe', 'Leo', 'Ava', 'Hugo', 'Nina', 'Omar', 'Lea', 'Ines', 'Tom', 'Maya', 'Sam', 'Clara', 'Jules', 'Elena', 'Lina', 'Felix', 'Alice', 'Marco', 'Yuki', 'Mateo', 'Anna', 'Paul', 'Sara', 'Ivan', 'Lola', 'Nora', 'Raj', 'Eva', 'Theo', 'Amy', 'Kofi', 'Mei', 'Oscar', 'Ruby', 'Malik', 'Iris', 'Aisha', 'Dan', 'Julia', 'Karim', 'Rosa', 'Luis', 'Hana', 'Victor', 'Lucy', 'Elsa', 'Noel', 'Priya', 'Jonas', 'Camille', 'Tariq', 'Ingrid'];
 const LAST = ['Laurent', 'Moreau', 'Dubois', 'Garcia', 'Rossi', 'Novak', 'Lindqvist', 'Tanaka', 'Nguyen', 'Okafor', 'Haddad', 'Petrov', 'Costa', 'Meyer', 'Fischer', 'Santos', 'Mercier', 'Jansen', 'Kowalski', 'Andersson', 'Romano', 'Patel', 'Ortega', 'Schmidt', 'Faure', 'Reyes', 'Suzuki', 'Vidal', 'Roux', 'Singh', 'Colombo', 'Fontaine', 'Hansen', 'Popescu', 'Sato', 'Yilmaz', 'Dupont', 'Keller', 'Navarro', 'Olsen', 'Choi', 'Ferrara', 'Mensah', 'Castro', 'Brandt', 'Verma', 'Leclerc', 'Marchetti', 'Nakamura', 'Oliveira'];
 
-const BADGE_TYPES = [
-  [{ label: 'ATTENDEE', color: '#2B6BE4' }, 58],
-  [{ label: 'SPEAKER', color: '#8A4FE0' }, 12],
-  [{ label: 'EXHIBITOR', color: '#F07D14' }, 12],
-  [{ label: 'PRESS', color: '#2FA844' }, 9],
-  [{ label: 'VIP', color: '#E5352B' }, 9],
-];
+/* ════════════════════════════ balance: every gameplay number in one place ════════════════════════════ */
+const TUNING = {
+  // Patience is counted in "calm seconds": a guest starts with patienceStart of them at the start of the
+  // round and patienceEnd at the end, and spends them `impatience` times faster than real time.
+  patienceStart: 6.5, patienceEnd: 2,
+  impatience: 2,            // 2 = guests run out of patience twice as fast as in the original game
+  minWait: 0.9,             // real seconds any guest waits at least, whatever the multipliers: the hardest guest stays possible
+  tutorialPatience: 1.6,    // the first two guests of the very first round
+  noQRChance: 0.4,          // share of guests who forgot their QR code and give their name instead
+  noQRPatience: 1.5,        // ...they are more patient, since finding a name takes longer
+  firstNoQRPatience: 2.4,   // ...and more still the very first time
+  wrongNameCost: 0.2,       // share of a guest's patience lost on a wrong name
+  // Guest types: how often they come (weight), points for a check-in (before the combo), patience factor
+  // (below 1 = leaves sooner). VIPs always have their QR code ready.
+  types: {
+    ATTENDEE: { label: 'ATTENDEE', color: '#2B6BE4', weight: 62, points: 1, patience: 1 },
+    SPEAKER:  { label: 'SPEAKER',  color: '#8A4FE0', weight: 14, points: 2, patience: 1 },
+    PRESS:    { label: 'PRESS',    color: '#2FA844', weight: 13, points: 2, patience: 1 },
+    VIP:      { label: 'VIP',      color: '#E5352B', weight: 11, points: 3, patience: 0.5, alwaysQR: true },
+  },
+  // Combo: every `step` check-ins in a row raise the multiplier by one (x2, x3...) up to `max`.
+  // A guest who walks off without a badge resets it.
+  combo: { step: 3, max: 5 },
+  // Printer jam: a first chance of one `firstAfter` seconds into the round, the next ones `gap` seconds after
+  // the previous one, at most `perRound` chances, each turning into a jam with probability `chance`.
+  // `taps` fix it. While it is stuck, the guest waiting for that badge loses patience at `patienceRate` of
+  // the normal speed. No jam before `notBefore` check-ins in the very first round.
+  jam: { firstAfter: [9, 15], gap: [10, 16], perRound: 2, chance: 0.7, taps: 6, patienceRate: 0.5, notBefore: 3 },
+};
+const T = TUNING.types;
+const BADGE_TYPES = Object.keys(T).map((k) => [T[k], T[k].weight]);
 
 const SKINS = ['#FFD9B8', '#F7C59A', '#EBAF7E', '#D0915E', '#A86B42', '#7A4A2C', '#5C3620'];
 const HAIRS = [['#26201F', 22], ['#3B2415', 20], ['#5E3518', 16], ['#8C4F1E', 10], ['#D99A28', 9], ['#F2CC4B', 7], ['#C7431D', 6], ['#9AA0AD', 6], ['#E3E3EA', 3], ['#EE5FA7', 1]];
@@ -774,6 +860,15 @@ function drawGlasses(c, P, fx) {
     c.moveTo(fx - 18.5, -2.5); c.lineTo(-23, -1.5);
     c.moveTo(fx + 18.5, -2.5); c.lineTo(23, -1.5);
     c.stroke();
+  } else if (P.glasses === 'shades') {                 // VIP sunglasses
+    c.strokeStyle = INK; c.lineWidth = 2.2; c.lineJoin = 'round';
+    for (const sx of [-1, 1]) {
+      c.beginPath(); c.moveTo(fx + sx * 1.5, -4.5); c.lineTo(fx + sx * 18, -4.5); c.quadraticCurveTo(fx + sx * 17.5, 6.5, fx + sx * 9.5, 6.5); c.quadraticCurveTo(fx + sx * 2, 6.5, fx + sx * 1.5, -4.5); c.closePath();
+      c.fillStyle = '#1F2233'; c.fill(); c.stroke();
+      c.strokeStyle = 'rgba(255,255,255,.55)'; c.lineWidth = 1.6; c.beginPath(); c.moveTo(fx + sx * 6, -1.5); c.lineTo(fx + sx * 9.5, -1.5); c.stroke();
+      c.strokeStyle = INK; c.lineWidth = 2.2;
+    }
+    c.beginPath(); c.moveTo(fx - 1.5, -3); c.lineTo(fx + 1.5, -3); c.moveTo(fx - 18, -4); c.lineTo(-23, -2.5); c.moveTo(fx + 18, -4); c.lineTo(23, -2.5); c.stroke();
   } else if (P.glasses === 'round') {
     c.strokeStyle = INK; c.lineWidth = 2; c.fillStyle = 'rgba(255,255,255,.2)';
     c.beginPath(); c.arc(fx - 8.8, 0.5, 8, 0, TAU); c.fill(); c.stroke();
@@ -1234,7 +1329,7 @@ const SAFE_W = 460, SAFE_H = 640;   // the area that is always visible, in scene
 // The best score is kept in the browser, so it survives a reload. Storage can be blocked
 // (private mode, sandboxed iframe): the game then simply keeps the record for this visit only.
 const Best = {
-  KEY: 'badgeRush.best.' + ROUND_TIME + 's',
+  KEY: 'badgeRush.points.' + ROUND_TIME + 's',
   load() {
     try { const v = localStorage.getItem(this.KEY); return v === null ? null : Math.max(0, parseInt(v, 10) || 0); }
     catch (e) { return null; }
@@ -1249,7 +1344,8 @@ const G = {
   showPlayer: false,
   char: 'lucy',
   t: 0, time: ROUND_TIME, score: 0, missed: 0, best: savedBest || 0, rounds: 0, served: 0, howtoSeen: false, lastSec: -1,
-  hasRecord: savedBest !== null,  // at least one finished round on this device: "New best!" only means something then
+  hasRecord: savedBest !== null,
+  streak: 0, bestMult: 1, log: [], jam: null, jamsLeft: 0, jamAt: 0, skipSpecial: 0,  // at least one finished round on this device: "New best!" only means something then
   guests: [], current: null, badge: null,
   search: null,               // guest list open for a guest without a QR code: { guest, options, lock }
   skipNoQR: 0, nameSeen: 0, nameDone: 0, appHide: 0,
@@ -1539,10 +1635,15 @@ function drawMonitor(c) {
   c.beginPath(); c.rect(x + w / 2 - 5, y + h - 2, 10, 12); inked(c, '#7B8198', 2.4);
   rr(c, x + w / 2 - 18, L.deskTop - 7, 36, 7, 3.5); inked(c, '#7B8198', 2.4);
   rr(c, x, y, w, h, 9); inked(c, '#3F4466', 3);
-  c.fillStyle = ok ? mixHex('#1FA83E', '#C4FFD0', Math.max(0, 1 - m.t / 0.3)) : '#262A45';
+  const jam = !!G.jam && G.screen === 'playing';
+  c.fillStyle = jam ? (Math.sin(G.t * 12) > 0 ? '#B3261E' : '#7A1E22') : ok ? mixHex('#1FA83E', '#C4FFD0', Math.max(0, 1 - m.t / 0.3)) : '#262A45';
   rr(c, x + 5, y + 5, w - 10, h - 10, 5); c.fill();
   c.textAlign = 'center'; c.textBaseline = 'middle';
-  if (ok) {
+  if (jam) {
+    c.beginPath(); c.moveTo(x + w / 2, y + 9); c.lineTo(x + w / 2 + 9, y + 24); c.lineTo(x + w / 2 - 9, y + 24); c.closePath(); inked(c, '#FFE14D', 1.6);
+    c.fillStyle = INK; c.fillRect(x + w / 2 - 1.1, y + 13.5, 2.2, 6); c.fillRect(x + w / 2 - 1.1, y + 20.5, 2.2, 2);
+    c.fillStyle = '#fff'; c.font = font(900, 9); spaced(c, 'PRINTER', x + w / 2, y + 32.5, 0.8); spaced(c, 'JAM', x + w / 2, y + 41.5, 0.8);
+  } else if (ok) {
     c.beginPath(); c.arc(x + w / 2, y + 14, 6.5, 0, TAU); inked(c, '#fff', 1.6);
     c.strokeStyle = '#1FA83E'; c.lineWidth = 2.4; c.beginPath(); c.moveTo(x + w / 2 - 3.3, y + 14.1); c.lineTo(x + w / 2 - 0.8, y + 16.7); c.lineTo(x + w / 2 + 3.6, y + 11.7); c.stroke();
     c.fillStyle = '#fff'; fitFont(c, m.first, 900, 13, w - 16); c.fillText(m.first, x + w / 2, y + 29.5);
@@ -1559,19 +1660,19 @@ function drawMonitor(c) {
 }
 
 function drawPrinter(c) {
-  const b = G.badge, printing = !!b && b.state === 'printing';
-  const jx = printing ? Math.sin(G.t * 95) * 0.7 : 0;
+  const b = G.badge, jam = G.jam, printing = !!b && b.state === 'printing' && !jam;
+  const jx = printing ? Math.sin(G.t * 95) * 0.7 : jam ? Math.sin(G.t * 40) * (0.8 + 3 * jam.kick) : 0;
   const x = L.printerX + jx, w = L.printerW, top = L.printerTop, h = 50;
   if (b && (b.state === 'printing' || b.state === 'ready')) {            // the badge slides up out of the slot
     c.save(); c.beginPath(); c.rect(x - 30, top - 240, w + 60, 245); c.clip();
-    const k = printing ? easeInOut(clamp(b.t / PRINT_TIME, 0, 1)) : 1;
-    const by = L.badgeY + (1 - k) * (BADGE_H - 2) + (printing ? 0 : Math.sin(b.t * 7) * 1.6);
-    if (!printing && G.screen === 'playing') {
+    const k = b.state === 'printing' ? easeInOut(clamp(b.t / PRINT_TIME, 0, 1)) : 1;
+    const by = L.badgeY + (1 - k) * (BADGE_H - 2) + (b.state === 'ready' ? Math.sin(b.t * 7) * 1.6 : 0);
+    if (b.state === 'ready' && G.screen === 'playing') {
       const p = 0.5 + 0.5 * Math.sin(G.t * 7);
       c.strokeStyle = 'rgba(255,225,60,' + (0.55 + 0.4 * p) + ')'; c.lineWidth = 6 + 3 * p;
       rr(c, L.badgeX - BADGE_W / 2 - 6, by - BADGE_H / 2 - 6, BADGE_W + 12, BADGE_H + 12, 13); c.stroke();
     }
-    drawBadge(c, L.badgeX + jx, by, 1, 0, b);
+    drawBadge(c, L.badgeX + jx, by, 1, jam ? -0.13 + Math.sin(G.t * 30) * 0.03 : 0, b);      // a stuck badge sits crooked
     c.restore();
   }
   rr(c, x, top, w, h, 10); c.fillStyle = '#8D97C4'; c.fill();
@@ -1581,7 +1682,50 @@ function drawPrinter(c) {
   rr(c, x + 8, top + 15, 39, 15, 4.5); inked(c, '#fff', 2);
   c.fillStyle = INK; c.font = font(900, 7.6); c.textAlign = 'center'; c.textBaseline = 'middle'; spaced(c, 'BADGES', x + 27.5, top + 23, 0.6);
   c.beginPath(); c.arc(x + w - 13, top + 22.5, 4.6, 0, TAU);
-  inked(c, printing ? (Math.sin(G.t * 32) > 0 ? '#FFCC1E' : '#9A6F00') : '#5CFF82', 2);
+  inked(c, jam ? (Math.sin(G.t * 18) > 0 ? '#FF3B30' : '#7A1E22') : printing ? (Math.sin(G.t * 32) > 0 ? '#FFCC1E' : '#9A6F00') : '#5CFF82', 2);
+  if (jam) {                                                  // crumpled paper caught in the slot
+    c.save(); c.translate(x + w / 2 + 6, top + 6); c.rotate(0.2);
+    c.beginPath(); c.moveTo(-12, 0); c.lineTo(-9, -9); c.lineTo(-3, -5); c.lineTo(2, -11); c.lineTo(7, -4); c.lineTo(12, -8); c.lineTo(13, 0); c.closePath();
+    inked(c, '#fff', 2); c.restore();
+  }
+}
+
+// Above a jammed printer: a warning sign that counts the taps still needed.
+function drawJamSign(c) {
+  const j = G.jam;
+  if (!j || G.screen !== 'playing') return;
+  const cx = L.printerX + L.printerW / 2, by = L.badgeY - BADGE_H / 2 - 16, w = 118, h = 54;
+  const pop = j.t < 0.25 ? easeOutBack(j.t / 0.25) : 1, wob = Math.sin(G.t * 9) * 0.04 + j.kick * 0.08;
+  c.save(); c.translate(cx, by); c.rotate(wob); c.scale(pop * (1 + j.kick * 0.06), pop * (1 + j.kick * 0.06));
+  twice(c, 3, (m) => {
+    c.beginPath(); c.moveTo(-9, -3); c.lineTo(9, -3); c.lineTo(0, 10); c.closePath(); put(c, m, '#E5352B');
+    rr(c, -w / 2, -h, w, h, 14); put(c, m, '#E5352B');
+  });
+  c.textAlign = 'center'; c.textBaseline = 'middle';
+  c.fillStyle = '#fff'; c.font = font(900, 19); spaced(c, 'JAM!', 0, -h + 17, 1.6);
+  c.font = font(900, 11); spaced(c, 'TAP TO FIX', 0, -h + 33, 0.8);
+  const n = j.need, gap = 3, dw = (w - 24 - gap * (n - 1)) / n;   // one segment per tap
+  for (let i = 0; i < n; i++) { c.fillStyle = i < j.done ? '#FFE14D' : 'rgba(255,255,255,.3)'; rr(c, -w / 2 + 12 + i * (dw + gap), -h + 42, dw, 6, 3); c.fill(); }
+  c.restore();
+}
+
+// Speaker, press and VIP guests show what they are worth: a tag over the head in the queue, beside the patience bar at the desk.
+function drawTypeTag(c, g) {
+  const ty = g.type;
+  if (ty === T.ATTENDEE) return;
+  const atDesk = g.state === 'desk' || g.state === 'served';
+  if (!atDesk && g.x < 24) return;                             // still walking in from off-screen
+  const vip = ty === T.VIP;
+  const text = atDesk ? (vip ? '★ ' : '') + ty.label + ' +' + ty.points : (vip ? '★+' : '+') + ty.points;   // compact in the queue
+  c.font = font(900, atDesk ? 10.5 : 12);
+  const w = c.measureText(text).width + 14, h = atDesk ? 19 : 20;
+  const x = atDesk ? g.x - 36 - w : g.x - w / 2, y = atDesk ? g.y - g.P.topY - 25 : g.y - g.P.topY - 27;
+  let sc = g.tagPop >= 0 && g.tagPop < 0.3 ? easeOutBack(g.tagPop / 0.3) * 1.25 - 0.25 * (g.tagPop / 0.3) : 1;
+  if (vip) sc *= 1 + 0.06 * Math.sin(G.t * 9);
+  c.save(); c.translate(x + w / 2, y + h / 2); c.scale(sc, sc);
+  rr(c, -w / 2, -h / 2, w, h, h / 2); inked(c, ty.color, 2.4);
+  c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(text, 0, 1);
+  c.restore();
 }
 
 function drawDesk(c) {
@@ -1802,6 +1946,11 @@ function drawParts(c) {
       c.beginPath(); c.arc(p.x, p.y, p.r * (1 + k * 0.6) * (1 - k * k), 0, TAU); inked(c, '#fff', 2);
     } else if (p.kind === 'badge') {
       drawBadge(c, p.x, p.y, 1 - k * k, p.rot, p.b);
+    } else if (p.kind === 'smoke') {
+      c.save(); c.globalAlpha = 0.85 * (1 - k); c.beginPath(); c.arc(p.x, p.y, p.r * (1 + k * 1.3), 0, TAU); inked(c, '#9AA0AD', 1.8); c.restore();
+    } else if (p.kind === 'spark') {
+      c.strokeStyle = k < 0.5 ? '#FFE14D' : '#FF9E3D'; c.lineWidth = 3 * (1 - k) + 0.5;
+      c.beginPath(); c.moveTo(p.x, p.y); c.lineTo(p.x - p.vx * 0.03, p.y - p.vy * 0.03); c.stroke();
     }
   }
 }
@@ -1855,7 +2004,7 @@ function draw() {
   for (const g of guests) if (g.state === 'angry') drawGuest(c, g);
 
   // interface drawn inside the scene
-  if (playing) for (const g of line) if (g.state === 'desk' || g.state === 'served') drawPatience(c, g);
+  if (playing) for (const g of line) { if (g.state === 'desk' || g.state === 'served') drawPatience(c, g); drawTypeTag(c, g); }
   for (const g of guests) {
     if (g.noQR) { if ((g.state === 'desk' && playing && g.bubble > 0) || (g.sayOut >= 0 && g.sayOut < 0.18)) drawSay(c, g); }
     else if (g.state === 'desk' && playing && g.bubble > 0) drawBubble(c, g);
@@ -1870,8 +2019,10 @@ function draw() {
   }
   if (b && b.state !== 'printing' && b.state !== 'ready') drawLooseBadge(c, b);
   drawParts(c);
+  drawJamSign(c);
+  if (playing && G.jam && G.jam.done < 2) drawHand(c, L.printerX + L.printerW / 2 + 8, L.printerTop + 24);
 
-  if (playing && (G.rounds === 1 && G.served < 2 || G.stepWait > 2.4 || G.hintT > 0)) {
+  if (playing && !G.jam && (G.rounds === 1 && G.served < 2 || G.stepWait > 2.4 || G.hintT > 0)) {
     if (cur && cur.state === 'desk' && !cur.noQR && cur.bubble > 0.7) { const r = bubbleRect(cur); drawHand(c, r.x + r.w / 2 + 20, r.y + r.h / 2 + 32); }
     else if (b && b.state === 'ready') drawHand(c, L.badgeX + 19, L.badgeY + 27);
   }
@@ -1890,27 +2041,36 @@ function draw() {
 // The pace rises through the round: guests walk up faster and lose patience sooner.
 const pace = () => clamp(1 - G.time / ROUND_TIME, 0, 1);
 const walkSpeed = () => lerp(300, 540, pace());
-const patienceFor = () => lerp(6.5, 2, pace()) * rand(0.94, 1.06) * (G.rounds === 1 && G.served + G.missed < 2 ? 1.6 : 1);   // the first two guests ever are extra patient
+function patienceFor(g) {                      // in calm seconds (see TUNING)
+  let p = lerp(TUNING.patienceStart, TUNING.patienceEnd, pace()) * rand(0.94, 1.06) * g.type.patience;
+  if (G.rounds === 1 && G.served + G.missed < 2) p *= TUNING.tutorialPatience;     // the first two guests ever
+  if (g.noQR) p *= G.nameSeen === 0 ? TUNING.firstNoQRPatience : TUNING.noQRPatience;
+  return Math.max(p, TUNING.minWait * TUNING.impatience);
+}
 
-// About two guests in five have no QR code to show. Each guest is drawn at random, so they can come in a row.
-const NO_QR_CHANCE = 0.4;
+// Some guests have no QR code to show (TUNING.noQRChance). Each guest is drawn at random, so they can come in a row.
 const EXCUSES = ['I forgot my QR code!', 'Oops, no QR code…', "I didn't print my ticket!", "I can't find my ticket!", 'My QR code is at home!', 'My phone just died!', 'No ticket on me, sorry!'];
 const NAME_LEADS = ["I'm ", "I'm ", "It's ", 'My name is ', 'The name is '];   // how they give their last name
 function nextNoQR() {
   if (G.attract) return false;
   if (G.skipNoQR > 0) { G.skipNoQR--; return false; }
-  return Math.random() < NO_QR_CHANCE;
+  return Math.random() < TUNING.noQRChance;
+}
+function nextType() {
+  if (!G.attract && G.skipSpecial > 0) { G.skipSpecial--; return T.ATTENDEE; }   // the first guests ever are plain attendees
+  return weighted(BADGE_TYPES);
 }
 
 function newGuest(x, slot) {
-  const noQR = nextNoQR();
+  const type = nextType(), noQR = !type.alwaysQR && nextNoQR(), P = makeLook();
+  if (type === T.VIP) P.glasses = 'shades';
   return {
-    P: makeLook(), first: pick(FIRST), last: pick(LAST), type: weighted(BADGE_TYPES), qr: pick(QRS),
+    P, first: pick(FIRST), last: pick(LAST), type, qr: pick(QRS),
     x, y: L.FY, s: 1, alpha: 1, state: 'queue', slot,
     walk: Math.random() * TAU, moving: false, t: Math.random() * 10, blink: rand(1, 4), look: 1,
     phone: 0, bubble: 0, scanT: -1, hop: -1, patience: 1, patienceMax: 1, mood: 'neutral',
     noQR, excuse: noQR ? pick(EXCUSES) : '', lead: pick(NAME_LEADS), voice: rand(430, 640), shrug: 0, sayOut: -1,
-    hasBadge: false, noPhone: noQR, p: 0, dead: false,
+    hasBadge: false, noPhone: noQR, p: 0, dead: false, tagPop: -1,
   };
 }
 
@@ -1941,7 +2101,11 @@ function setupRound() {
   G.player.scanT = G.player.cheerT = G.player.sadT = G.player.sayT = 9;
   closeSearch();
   G.nameDone = 0;
-  G.skipNoQR = G.rounds === 0 ? 2 : 0;       // the very first two guests always have their QR code
+  G.skipNoQR = G.rounds === 0 ? 2 : 0;       // the very first two guests always have their QR code...
+  G.skipSpecial = G.rounds === 0 ? 2 : 0;    // ...and are plain attendees
+  G.streak = 0; G.bestMult = 1; G.log = [];
+  G.jam = null; G.jamsLeft = TUNING.jam.perRound; scheduleJam(TUNING.jam.firstAfter);
+  updateCombo();
   G.guests = [];
   for (let k = 1; k <= L.queueN; k++) G.guests.push(newGuest(slotX(k), k));
   G.fade = 1;
@@ -1959,13 +2123,13 @@ function startCountdown() {
 
 function arriveAtDesk(g) {                   // step 1: the guest holds up the phone with the QR code...
   g.state = 'desk'; g.x = L.gx;
-  g.patienceMax = patienceFor();
+  g.patienceMax = patienceFor(g);
   g.phone = 0; g.bubble = 0;
   if (g.noQR) {                              // ...or has no code and gives a name instead
-    g.patienceMax *= G.nameSeen === 0 ? 2.4 : 1.5;   // finding a name takes longer, and the first time longer still
     G.nameSeen++;
     openSearch(g);
   }
+  if (g.type !== T.ATTENDEE) { g.tagPop = 0; Sound.special(g.type === T.VIP); }
   g.patience = g.patienceMax;
   G.stepWait = 0;
 }
@@ -1973,9 +2137,10 @@ function arriveAtDesk(g) {                   // step 1: the guest holds up the p
 function startPrint(g) {                     // step 3: the guest is validated and the badge starts printing
   g.state = 'served'; g.mood = 'neutral';
   G.monitor.mode = 'ok'; G.monitor.first = g.first; G.monitor.last = g.last; G.monitor.t = 0;
-  G.badge = { state: 'printing', t: 0, guest: g, first: g.first, last: g.last, type: g.type, x: L.badgeX, y: L.badgeY, fx: 0, fy: 0, dur: 0.2, buffered: false };
+  G.badge = { state: 'printing', t: 0, guest: g, first: g.first, last: g.last, type: g.type, x: L.badgeX, y: L.badgeY, fx: 0, fy: 0, dur: 0.2, buffered: false,
+    jamAt: jamDue() ? PRINT_TIME * rand(0.3, 0.5) : -1 };
   G.stepWait = 0; G.hintT = 0;
-  Sound.print(PRINT_TIME);
+  if (!G.jam) Sound.print(PRINT_TIME);       // a printer that is already jammed stays silent until it is fixed
 }
 
 function scan(g) {                           // step 2: scan the QR code
@@ -2023,7 +2188,7 @@ function chooseName(i) {
     return;
   }
   o.tried = true; s.lock = 0.3;              // wrong name: it costs patience and that entry is crossed out
-  g.patience -= g.patienceMax * 0.2;
+  g.patience -= g.patienceMax * TUNING.wrongNameCost;
   markRow(i, 'wrong'); shakeApp();
   Sound.wrong();
 }
@@ -2044,22 +2209,42 @@ function confetti(x, y, n) {
 function popup(text, x, y, color, size) { G.parts.push({ kind: 'text', text, x, y, vy: -80, t: 0, life: 0.85, color, size: size || 28 }); }
 function ripple(x, y, color) { G.parts.push({ kind: 'ring', x, y, t: 0, life: 0.3, color }); }
 
-function completeCheckin(g) {                // step 5: +1, the guest heads for the doors
+/* combo: check-ins in a row raise a multiplier (see TUNING.combo) */
+const comboMult = (streak) => Math.min(TUNING.combo.max, 1 + Math.floor(streak / TUNING.combo.step));
+
+function completeCheckin(g) {                // step 5: points, the guest heads for the doors
   G.badge = null; G.current = null; G.lastLeft = false;
-  G.score++; G.served++;
+  const before = comboMult(G.streak);
+  G.streak++;
+  const mult = comboMult(G.streak), pts = g.type.points * mult;
+  G.score += pts; G.served++;
+  G.bestMult = Math.max(G.bestMult, mult);
+  G.log.push({ type: g.type.label, base: g.type.points, mult, pts, streak: G.streak });
   g.hasBadge = true; g.noPhone = true; g.phone = 0; g.mood = 'happy'; g.hop = 0;
   g.state = 'toDoor'; g.p = 0; g.fromDX = g.x - L.AX; g.doorOff = -34 + rand(-8, 8); g.doorSpeed = 330;
-  popup('+1', L.badgeX + 4, L.badgeY - 6, '#FFCC1E', 38);        // above the printer, clear of the next QR code
-  confetti(g.x, g.y - g.P.shY + 24, 18);
+  popup('+' + pts, L.badgeX + 4, L.badgeY - 6, '#FFCC1E', pts >= 6 ? 46 : 38);   // above the printer, clear of the next QR code
+  const special = g.type !== T.ATTENDEE;
+  if (special || mult > 1) popup((special ? g.type.label + ' ' : '') + (mult > 1 ? '×' + mult : '+' + g.type.points), L.badgeX + 4, L.badgeY - 44, special ? g.type.color : '#FF9E3D', 22);
+  confetti(g.x, g.y - g.P.shY + 24, special ? 30 : 18);
   G.player.cheerT = 0;
   G.monitor.mode = 'idle';
   Sound.success();
+  if (g.type === T.VIP) Sound.vipDone();
+  if (mult > before) {                       // reached a new multiplier
+    popup('COMBO ×' + mult + '!', clamp(L.px - 10, 120, L.W - 120), L.FY - PLAYERS[G.char].topY - 58, '#FF9E3D', 30);
+    Sound.comboUp(mult);
+    announceEl.textContent = 'Combo times ' + mult;
+  }
   updateHud(true);
+  updateCombo(mult > before ? 'up' : 'step');
   advanceQueue();
 }
 
-function guestLeaves(g) {                    // patience ran out: the guest leaves and does not count
+function guestLeaves(g) {                    // patience ran out: the guest leaves, scores nothing and breaks the combo
   G.missed++; G.current = null; G.lastLeft = true;
+  const lost = comboMult(G.streak) > 1;
+  G.log.push({ type: g.type.label, left: true, streakLost: G.streak });
+  G.streak = 0;
   if (G.search && G.search.guest === g) closeSearch();
   g.state = 'angry'; g.mood = 'angry'; g.phone = 0; g.puff = 0; g.scanT = -1;
   const b = G.badge;
@@ -2074,8 +2259,46 @@ function guestLeaves(g) {                    // patience ran out: the guest leav
   G.player.sadT = 0;
   G.monitor.mode = 'idle';
   Sound.stopPrint(); Sound.fail();
+  if (lost) { Sound.comboBreak(); popup('Combo lost', clamp(L.px - 10, 120, L.W - 120), L.FY - PLAYERS[G.char].topY - 58, '#FF6A5E', 24); }
+  updateCombo(lost ? 'break' : null);
   advanceQueue();
 }
+
+/* ════════════════════════════ random event: printer jam ════════════════════════════ */
+const elapsed = () => ROUND_TIME - G.time;
+function scheduleJam(range) { G.jamAt = elapsed() + rand(range[0], range[1]); G.jamLive = Math.random() < TUNING.jam.chance; }
+function jamDue() {
+  if (G.jamsLeft <= 0 || G.jam || elapsed() < G.jamAt || (G.rounds === 1 && G.served < TUNING.jam.notBefore)) return false;
+  if (!G.jamLive) { G.jamsLeft--; scheduleJam(TUNING.jam.gap); return false; }   // this time the printer behaves
+  return true;
+}
+function startJam() {
+  G.jam = { need: TUNING.jam.taps, done: 0, t: 0, kick: 0 };
+  G.jamsLeft--;
+  G.shake = Math.max(G.shake, 0.12);
+  G.hintT = 0;
+  Sound.stopPrint(); Sound.jam();
+  announceEl.textContent = 'Printer jam! Tap the printer ' + TUNING.jam.taps + ' times to fix it.';
+}
+function jamTap(x, y) {
+  const j = G.jam;
+  j.done++; j.kick = 1;
+  ripple(x, y, '#FFE14D');
+  for (let i = 0; i < 4; i++) G.parts.push({ kind: 'spark', x: L.printerX + L.printerW / 2 + rand(-20, 20), y: L.printerTop + rand(0, 10), vx: rand(-160, 160), vy: rand(-260, -120), t: 0, life: 0.35 });
+  if (j.done >= j.need) {
+    G.jam = null;
+    scheduleJam(TUNING.jam.gap);
+    popup('Fixed!', L.printerX + L.printerW / 2, L.printerTop - 30, '#6CFF8E', 28);
+    Sound.jamFixed();
+    announceEl.textContent = 'Printer fixed!';
+    const b = G.badge;
+    if (b && b.state === 'printing') Sound.print(Math.max(0.15, PRINT_TIME - b.t));   // the badge carries on printing
+  } else Sound.jamTap(j.done / j.need);
+}
+const printerRect = () => {                  // the printer and the badge slot above it
+  const top = L.badgeY - BADGE_H / 2;
+  return { x: L.printerX - 4, y: top, w: L.printerW + 8, h: L.printerTop + 50 - top };
+};
 
 function endRound() {
   G.time = 0;
@@ -2084,6 +2307,7 @@ function endRound() {
   if (b && (b.state === 'held' || b.state === 'drag' || b.state === 'back')) { b.state = 'ready'; b.t = 0; }
   pointer.id = null;
   closeSearch();
+  G.jam = null;
   Sound.stopPrint();
   setScreen('timeup');
   G.endT = 1.5;
@@ -2101,6 +2325,7 @@ function updateGuests(dt) {
     if (g.hop >= 0) { g.hop += dt; if (g.hop > 0.34) g.hop = -1; }
     if (g.scanT >= 0) g.scanT += dt;
     if (g.sayOut >= 0) g.sayOut += dt;
+    if (g.tagPop >= 0) g.tagPop += dt;
     g.shrug = clamp(g.shrug + (g.noQR && g.state === 'desk' ? dt / 0.15 : -dt / 0.2), 0, 1);
     g.moving = false;
     switch (g.state) {
@@ -2118,7 +2343,7 @@ function updateGuests(dt) {
         g.phone = Math.min(1, g.phone + dt / 0.13);
         g.bubble = Math.min(1, g.bubble + dt / 0.2);
         if (playing) {
-          g.patience -= dt;
+          g.patience -= dt * TUNING.impatience;
           g.mood = g.patience < g.patienceMax * 0.3 ? 'annoyed' : g.noQR ? 'sorry' : 'neutral';
           if (g.patience <= 0) guestLeaves(g);
         }
@@ -2127,9 +2352,12 @@ function updateGuests(dt) {
         g.y = L.FY; g.x = L.gx;
         g.phone = Math.max(0, g.phone - dt / 0.2);
         const b = G.badge;
-        // patience is paused while the badge prints: only the player's own time counts
-        if (playing && b && b.guest === g && (b.state === 'ready' || b.state === 'held' || b.state === 'drag' || b.state === 'back')) {
-          g.patience -= dt;
+        // patience is paused while the badge prints: only the player's own time counts. A jammed printer
+        // is the player's to fix, so it costs patience too, at a reduced rate.
+        const mine = b && b.guest === g && (b.state === 'ready' || b.state === 'held' || b.state === 'drag' || b.state === 'back');
+        const stuck = b && b.guest === g && b.state === 'printing' && G.jam;
+        if (playing && (mine || stuck)) {
+          g.patience -= dt * TUNING.impatience * (stuck ? TUNING.jam.patienceRate : 1);
           g.mood = g.patience < g.patienceMax * 0.3 ? 'annoyed' : 'neutral';
           if (g.patience <= 0) guestLeaves(g);
         }
@@ -2172,6 +2400,8 @@ function updateBadge(dt) {
   if (!b) return;
   b.t += dt;
   if (b.state === 'printing') {
+    if (G.jam) { b.t -= dt; return; }                          // stuck until the printer is fixed
+    if (b.jamAt >= 0 && b.t >= b.jamAt) { b.t = b.jamAt; b.jamAt = -1; startJam(); return; }
     if (b.t >= PRINT_TIME) {
       b.state = 'ready'; b.t = 0; G.stepWait = 0;
       Sound.badgeOut();
@@ -2191,10 +2421,17 @@ function updateFx(dt) {
     p.t += dt;
     if (p.kind === 'conf' || p.kind === 'badge') { p.vy += 1100 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt; }
     else if (p.kind === 'text') p.y += p.vy * dt * (1 - p.t / p.life);
-    else if (p.kind === 'steam') { p.x += p.vx * dt; p.y += p.vy * dt; }
+    else if (p.kind === 'steam' || p.kind === 'smoke') { p.x += p.vx * dt; p.y += p.vy * dt; }
+    else if (p.kind === 'spark') { p.vy += 900 * dt; p.x += p.vx * dt; p.y += p.vy * dt; }
   }
   if (G.parts.length) G.parts = G.parts.filter((p) => p.t < p.life);
   if (G.beam) { G.beam.t += dt; if (G.beam.t >= 0.2) G.beam = null; }
+  if (G.jam) {
+    const j = G.jam;
+    j.t += dt; j.kick = Math.max(0, j.kick - dt * 7);
+    j.puff = (j.puff || 0) - dt;
+    if (j.puff <= 0) { j.puff = 0.22; G.parts.push({ kind: 'smoke', x: L.printerX + L.printerW / 2 + rand(-16, 16), y: L.printerTop + 2, vx: rand(-18, 18), vy: rand(-60, -36), t: 0, life: 0.7, r: rand(5, 8) }); }
+  }
   G.vignette = Math.max(0, G.vignette - dt * 2.2);
   G.shake = Math.max(0, G.shake - dt * 1.4);
   G.fade = Math.max(0, G.fade - dt * 4);
@@ -2267,6 +2504,7 @@ canvas.addEventListener('pointerdown', (e) => {
     scan(g); ripple(x, y, '#6CFF8E');
     return;
   }
+  if (G.jam && inRect(x, y, printerRect(), 14)) { jamTap(x, y); return; }   // jammed: every tap on the printer helps
   if (b && inRect(x, y, badgeRect(), 16)) {                               // tap or grab the badge
     if (b.state === 'ready' || b.state === 'back') {
       b.state = 'held'; b.t = 0; b.x = L.badgeX; b.y = L.badgeY;
@@ -2294,7 +2532,7 @@ canvas.addEventListener('pointermove', (e) => {
     canvas.style.cursor = 'grabbing';
   } else if (e.pointerType === 'mouse') {
     const g = G.current;
-    const hot = G.screen === 'playing' && ((g && g.state === 'desk' && !g.noQR && inRect(x, y, bubbleRect(g), 12)) || (b && b.state === 'ready' && inRect(x, y, badgeRect(), 16)));
+    const hot = G.screen === 'playing' && ((g && g.state === 'desk' && !g.noQR && inRect(x, y, bubbleRect(g), 12)) || (b && b.state === 'ready' && inRect(x, y, badgeRect(), 16)) || (G.jam && inRect(x, y, printerRect(), 14)));
     canvas.style.cursor = hot ? 'pointer' : 'default';
   }
 });
@@ -2322,6 +2560,21 @@ canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 const screens = { title: $('#screen-title'), select: $('#screen-select'), howto: $('#screen-howto'), results: $('#screen-results') };
 const hudEl = $('#hud'), timeEl = $('#time'), scoreEl = $('#score'), chipTime = $('#chip-time'), chipScore = $('#chip-score');
 const announceEl = $('#announce'), coachEl = $('#coach'), muteEl = $('#mute');
+const chipCombo = $('#chip-combo'), comboEl = $('#combo'), pipsEl = $('#pips');
+for (let i = 0; i < TUNING.combo.step; i++) pipsEl.appendChild(document.createElement('i'));
+const pips = Array.from(pipsEl.children);
+// points legend on the how-to screen, straight from TUNING
+$('#legend').innerHTML = Object.keys(T).map((k) => '<li style="--c:' + T[k].color + '">' + (T[k] === T.VIP ? '★ ' : '') + T[k].label + ' <b>+' + T[k].points + '</b></li>').join('');
+
+function updateCombo(kind) {                 // kind: 'up' (new multiplier), 'break' (combo lost), anything else: plain refresh
+  const m = comboMult(G.streak || 0), max = TUNING.combo.max, step = TUNING.combo.step;
+  comboEl.textContent = '×' + m;
+  const filled = m >= max ? step : (G.streak || 0) % step;
+  pips.forEach((p, i) => p.classList.toggle('on', i < filled));
+  chipCombo.classList.toggle('hot', m > 1);
+  chipCombo.dataset.level = String(m);
+  if (kind === 'up' || kind === 'break') { chipCombo.classList.remove('up', 'break'); void chipCombo.offsetWidth; chipCombo.classList.add(kind); }
+}
 const portraits = Array.from(document.querySelectorAll('canvas.portrait'));
 const appEl = $('#app'), appRows = Array.from(appEl.querySelectorAll('.app-row'));
 let coachShown = '', busy = false;
@@ -2372,6 +2625,7 @@ function announce(text, color, dur) {
 function updateCoach() {
   let text = '';
   if (G.search || G.appHide > 0) text = '';                 // the guest list is open and has its own hint
+  else if (G.jam && G.screen === 'playing') text = '<b>Printer jam!</b> Tap the printer to fix it';
   else if (G.screen === 'playing' && G.rounds === 1 && G.served < 2) {
     const g = G.current, b = G.badge;
     if (b && b.state === 'printing') text = 'The badge is printing…';
@@ -2385,11 +2639,12 @@ function updateCoach() {
   coachEl.classList.toggle('hidden', !text);
 }
 
+const RANKS = [12, 30, 55, 90];               // points for Desk Rookie, Check-in Pro, Badge Master, Registration Legend
 function rankFor(n) {
-  if (n >= 23) return 'Registration Legend';
-  if (n >= 18) return 'Badge Master';
-  if (n >= 13) return 'Check-in Pro';
-  if (n >= 8) return 'Desk Rookie';
+  if (n >= RANKS[3]) return 'Registration Legend';
+  if (n >= RANKS[2]) return 'Badge Master';
+  if (n >= RANKS[1]) return 'Check-in Pro';
+  if (n >= RANKS[0]) return 'Desk Rookie';
   return 'Trainee';
 }
 
@@ -2401,10 +2656,12 @@ function showResults() {
   Best.save(G.best);
   resetShare();
   const name = PLAYERS[G.char].name;
-  $('#res-title').textContent = G.score >= 8 ? 'Nice work, ' + name + '!' : G.score > 0 ? 'Shift over, ' + name + '!' : 'Rough shift, ' + name + '!';
+  $('#res-title').textContent = G.score >= RANKS[0] ? 'Nice work, ' + name + '!' : G.score > 0 ? 'Shift over, ' + name + '!' : 'Rough shift, ' + name + '!';
   $('#res-score').textContent = G.score;
-  $('#res-label').textContent = G.score === 1 ? 'guest checked in' : 'guests checked in';
+  $('#res-label').textContent = G.score === 1 ? 'point' : 'points';
   $('#res-rank').textContent = rankFor(G.score);
+  $('#res-guests').textContent = G.served;
+  $('#res-combo').textContent = '×' + G.bestMult;
   $('#res-best').textContent = G.best;
   $('#res-missed').textContent = G.missed;
   $('#newbest').classList.toggle('hidden', !newBest);
@@ -2420,7 +2677,7 @@ let shareTimer = 0;
 
 function shareText() {
   const n = G.score;
-  return n + (n === 1 ? ' guest' : ' guests') + ' in ' + ROUND_TIME + ' seconds, ' + rankFor(n) + '. Think you can beat that?';
+  return n + (n === 1 ? ' point' : ' points') + ' in ' + ROUND_TIME + ' seconds, ' + rankFor(n) + ' (combo ×' + G.bestMult + '). Think you can beat that?';
 }
 function shareUrl() {                          // the page address without #test or tracking parameters
   return /^https?:$/.test(location.protocol) ? location.origin + location.pathname : '';
@@ -2558,12 +2815,15 @@ if (location.hash.indexOf('test') >= 0) {
   window.__badgeRush = {
     state() { return { screen: G.screen, time: G.time, score: G.score, missed: G.missed, best: G.best, rounds: G.rounds, char: G.char, guests: G.guests.length, guest: G.current ? G.current.state : null, noQR: G.current ? !!G.current.noQR : null, search: !!G.search, appShown: !appEl.classList.contains('hidden'), thanks: G.player.sayT < 1.15, nameDone: G.nameDone, monitor: G.monitor.mode, badge: G.badge ? G.badge.state : null, patience: G.current ? G.current.patience : null, patienceMax: G.current ? G.current.patienceMax : null, door: G.door.open, layout: { W: L.W, H: L.H, s: L.s } }; },
     setTime(s) { G.time = s; },
+    extra() { return { streak: G.streak, mult: comboMult(G.streak), bestMult: G.bestMult, served: G.served, log: G.log.slice(), jam: G.jam ? { need: G.jam.need, done: G.jam.done } : null, jamsLeft: G.jamsLeft, type: G.current ? G.current.type.label : null, patience: G.current ? G.current.patience : null }; },
+    tuning: TUNING,
     cost() { const r = { frames: cost.n, avgMs: cost.n ? cost.sum / cost.n : 0, maxMs: cost.max }; cost.n = 0; cost.sum = 0; cost.max = 0; return r; },
     targets() {
       const r = canvas.getBoundingClientRect(), g = G.current, b = G.badge, out = {};
       const pt = (x, y) => [r.left + x * L.s, r.top + y * L.s];
       if (G.screen === 'playing' && g && g.state === 'desk' && !g.noQR) { const q = bubbleRect(g); out.qr = pt(q.x + q.w / 2, q.y + q.h / 2); }
       if (G.screen === 'playing' && b && b.state === 'ready') out.badge = pt(L.badgeX, L.badgeY);
+      if (G.screen === 'playing' && G.jam) out.printer = pt(L.printerX + L.printerW / 2, L.printerTop + 25);
       if (g) out.guest = pt(g.x, g.y - g.P.shY * 0.7);
       if (G.screen === 'playing' && G.search) out.names = appRows.map((el, i) => { const q = el.getBoundingClientRect(), o = G.search.options[i]; return { x: q.left + q.width / 2, y: q.top + q.height / 2, ok: o.ok, tried: o.tried, last: o.last }; });
       return out;
