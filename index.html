@@ -828,12 +828,12 @@ function makeLook() {
 }
 
 /* ════════════════════════════ the two playable characters ════════════════════════════ */
-const HOODIE = '#2B6BE4';
-// Both have exactly the same body (so neither plays differently); only the face, hair and trouser shade tell them apart.
+const HOODIE = '#2B6BE4', HOODIE_PINK = '#EC4F95';
+// Both have exactly the same body (so neither plays differently); only the face, hair, hoodie colour and trouser shade tell them apart.
 const STAFF_BODY = { topType: 'hoodie', top: HOODIE, shoes: '#FFFFFF', sole: '#BFC6D8', sneaker: true, staff: true, leg: 78, torso: 72, sh: 58, legW: 17, armW: 13.5, hk: 1.36 };
 const PLAYERS = {
-  // Lucy: long chestnut hair with a side-swept fringe, blue eyes, big grin, glasses
-  lucy: finishLook(Object.assign({}, STAFF_BODY, { name: 'Lucy', face: 'lucy', skin: '#F6CAA9', hair: '#8A4520', iris: '#4F98D8', hairStyle: 'lucy', bottom: '#2C3158' })),
+  // Lucy: long chestnut hair with a side-swept fringe, blue eyes, big grin, glasses, pink hoodie
+  lucy: finishLook(Object.assign({}, STAFF_BODY, { name: 'Lucy', face: 'lucy', top: HOODIE_PINK, skin: '#F6CAA9', hair: '#8A4520', iris: '#4F98D8', hairStyle: 'lucy', bottom: '#2C3158' })),
   // Jo: dark curly hair, dark eyes, thick brows, full short beard, big grin
   jo: finishLook(Object.assign({}, STAFF_BODY, { name: 'Jo', face: 'jo', skin: '#ECB991', hair: '#231611', beard: '#231611', iris: '#4A2A14', hairStyle: 'jo', bottom: '#3B4273' })),
 };
