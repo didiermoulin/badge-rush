@@ -225,6 +225,18 @@ kbd{display:inline-block;font:inherit;font-weight:900;font-size:.9em;color:var(-
 .btn.share{display:inline-flex;align-items:center;gap:.4em;background:#DDEBFF}
 .btn.share svg{width:1em;height:1em;flex:none}
 .btn.share.done{background:#A9F5B7}
+.btn.share.hot{background:var(--yellow);animation:share-hot 1.2s ease-in-out infinite}
+@keyframes share-hot{50%{transform:translateY(-3px) scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.btn.share.hot{animation:none}}
+.btn.quiet{background:#fff}
+#share-go{background:var(--yellow)}
+#chip-score.won{background:#C9FFD3}
+.challenge-pill{display:inline-flex;align-items:center;gap:.4em;margin:0;font-size:max(14px,calc(2.3*var(--u)));padding:.4em 1em;background:#FFF3C4}
+.challenge-pill b{color:var(--red)}
+.share-panel{gap:10px}
+.share-img{display:block;height:min(52vh,540px);width:auto;max-width:100%;aspect-ratio:4/5;border-radius:14px;border:3px solid var(--ink);background:#DDEBFF;object-fit:contain}
+.share-note{margin:0;min-height:1.2em;font-size:13px;font-weight:800;color:var(--ink-soft);text-align:center;max-width:30em}
+@media (max-height:480px){.share-panel{flex-direction:row;flex-wrap:wrap;justify-content:center}.share-panel h2{width:100%}.share-img{height:62vh}}
 @media (max-height:480px){                       /* landscape phones: keep the three buttons on one line */
   #screen-results .btn-row{flex-wrap:nowrap;gap:8px}
   #screen-results .btn-row .btn{font-size:15px;padding:.55em .85em;white-space:nowrap}
@@ -274,8 +286,15 @@ kbd{display:inline-block;font:inherit;font-weight:900;font-size:.9em;color:var(-
 @media (max-height:480px){                        /* phones held sideways: use the width */
   .res-rows{grid-template-columns:repeat(4,1fr);max-width:none;gap:5px}
   .res-rows div{font-size:12px;padding:.25em .5em;gap:4px;white-space:nowrap;border-width:2.5px}
-  .lb{flex-direction:row;flex-wrap:wrap;justify-content:center;max-width:none;padding:5px 8px;gap:4px 10px}
-  .lb-line{font-size:13px}
+  .lb{flex-direction:row;flex-wrap:wrap;justify-content:center;align-items:center;max-width:none;padding:4px 8px;gap:4px 8px}
+  .lb-line{font-size:12px}
+  .lb-line svg{display:none}
+  .lb-flagbtn{min-width:40px;font-size:17px;border-width:2.5px;border-radius:10px}
+  #lb-initials{font-size:16px;width:4.4em;padding:2px 4px 2px 8px;border-width:2.5px;border-radius:10px}
+  #lb-send{font-size:14px;padding:.25em .8em}
+  #lb-open{font-size:12px}
+  #lb-open .long{display:none}
+  .res-portrait{width:calc(14*var(--u))}
   .board{display:grid;grid-template-columns:1fr 1fr;gap:4px 8px}
   .board li{font-size:13px}
 }
@@ -298,7 +317,7 @@ kbd{display:inline-block;font:inherit;font-weight:900;font-size:.9em;color:var(-
     </div>
     <div class="chip" id="chip-score">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 2l6 8 6-8" fill="none" stroke="#1B1B26" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 2l6 8 6-8" fill="none" stroke="#E5352B" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round"/><rect x="6" y="9" width="20" height="21" rx="4" fill="#fff" stroke="#1B1B26" stroke-width="3"/><path d="M11 20l3.500 3.500L21 17" fill="none" stroke="#3DB84B" stroke-width="3.400" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <div class="chip-text"><span class="chip-label">Score</span><span class="chip-value" id="score">0</span></div>
+      <div class="chip-text"><span class="chip-label" id="score-label">Score</span><span class="chip-value" id="score">0</span></div>
     </div>
     <div class="chip" id="chip-combo">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M17.500 2.500L6 18h8.500l-2.500 11.500L25.500 13H16.500z" fill="#FF9E3D" stroke="#1B1B26" stroke-width="2.800" stroke-linejoin="round"/></svg>
@@ -345,6 +364,7 @@ kbd{display:inline-block;font:inherit;font-weight:900;font-size:.9em;color:var(-
       </h1>
     </div>
     <p class="pitch pill">Scan the tickets, hand out the badges, beat the clock!</p>
+    <p id="challenge-pill" class="pill challenge-pill hidden" role="status"></p>
     <button id="btn-top" type="button" class="pill top-pill hidden"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5H4.500a3 3 0 0 0 3 4.500M17 5h2.500a3 3 0 0 1-3 4.500" fill="none" stroke="#1B1B26" stroke-width="2" stroke-linecap="round"/><path d="M7 3h10v5a5 5 0 0 1-10 0z" fill="#FFCC1E" stroke="#1B1B26" stroke-width="2" stroke-linejoin="round"/><path d="M12 13v3.500M8 21h8l-.800-4.500H8.800z" fill="#FFCC1E" stroke="#1B1B26" stroke-width="2" stroke-linejoin="round"/></svg><span id="top-text">This week's top 10</span></button>
     <button id="btn-play" type="button" class="btn primary big"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 2.500v15a1 1 0 0 0 1.500.900l13-7.500a1 1 0 0 0 0-1.800l-13-7.500A1 1 0 0 0 4 2.500z" fill="#1B1B26"/></svg>Play</button>
   </section>
@@ -396,6 +416,21 @@ kbd{display:inline-block;font:inherit;font-weight:900;font-size:.9em;color:var(-
     </div>
   </section>
 
+  <!-- Share your badge -->
+  <section id="screen-share" class="screen hidden" aria-label="Share your badge">
+    <div class="panel share-panel">
+      <h2>Your badge</h2>
+      <img id="share-img" class="share-img" alt="Your Badge Rush badge">
+      <div class="btn-row">
+        <button id="share-go" type="button" class="btn primary share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.500v11M7.500 8L12 3.500 16.500 8" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11.500H6.500a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5.500a2 2 0 0 0-2-2H16" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Share</span></button>
+        <button id="share-dl" type="button" class="btn">Download</button>
+        <button id="share-copy" type="button" class="btn">Copy text</button>
+      </div>
+      <p class="share-note" id="share-note" role="status"></p>
+      <button id="share-back" type="button" class="linkish">Back</button>
+    </div>
+  </section>
+
   <!-- 4. Results -->
   <section id="screen-results" class="screen hidden" aria-label="Results">
     <div class="panel">
@@ -423,11 +458,11 @@ kbd{display:inline-block;font:inherit;font-weight:900;font-size:.9em;color:var(-
           <button class="btn primary small" id="lb-send" type="submit">Post</button>
         </form>
         <p class="lb-msg" id="lb-msg" role="status"></p>
-        <button type="button" class="linkish" id="lb-open">See this week's top 10</button>
+        <button type="button" class="linkish" id="lb-open"><span class="long">See this week's </span>top 10</button>
       </div>
       <div class="btn-row">
         <button id="btn-again" type="button" class="btn primary">Play again</button>
-        <button id="btn-share" type="button" class="btn share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.500v11M7.500 8L12 3.500 16.500 8" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11.500H6.500a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5.500a2 2 0 0 0-2-2H16" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="share-label">Share my score</span></button>
+        <button id="btn-share" type="button" class="btn share"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.500v11M7.500 8L12 3.500 16.500 8" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 11.500H6.500a2 2 0 0 0-2 2V19a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5.500a2 2 0 0 0-2-2H16" fill="none" stroke="#1B1B26" stroke-width="2.800" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="share-label">Share my badge</span></button>
         <button id="btn-change" type="button" class="btn">Change character</button>
       </div>
     </div>
@@ -2252,7 +2287,7 @@ function setupRound() {
   G.nameDone = 0;
   G.skipNoQR = G.rounds === 0 ? 2 : 0;       // the very first two guests always have their QR code...
   G.skipSpecial = G.rounds === 0 ? 2 : 0;    // ...and are plain attendees
-  G.streak = 0; G.bestMult = 1; G.log = [];
+  G.streak = 0; G.bestMult = 1; G.log = []; G.jamsFixed = 0;
   G.jam = null; G.jamsLeft = TUNING.jam.perRound; scheduleJam(TUNING.jam.firstAfter);
   updateCombo();
   G.guests = [];
@@ -2454,7 +2489,7 @@ function jamTap(x, y) {
   ripple(x, y, '#FFE14D');
   for (let i = 0; i < 4; i++) G.parts.push({ kind: 'spark', x: L.printerX + L.printerW / 2 + rand(-20, 20), y: L.printerTop + rand(0, 10), vx: rand(-160, 160), vy: rand(-260, -120), t: 0, life: 0.35 });
   if (j.done >= j.need) {
-    G.jam = null;
+    G.jam = null; G.jamsFixed = (G.jamsFixed || 0) + 1;
     scheduleJam(TUNING.jam.gap);
     popup('Fixed!', L.printerX + L.printerW / 2, L.printerTop - 30, '#6CFF8E', 28);
     Sound.jamFixed(); Haptics.buzz(HAPTICS.jamFixed);
@@ -2725,8 +2760,8 @@ canvas.addEventListener('pointercancel', (e) => release(e, true));
 canvas.addEventListener('contextmenu', (e) => e.preventDefault());
 
 /* ════════════════════════════ screens and on-screen display ════════════════════════════ */
-const screens = { title: $('#screen-title'), select: $('#screen-select'), howto: $('#screen-howto'), results: $('#screen-results'), board: $('#screen-board') };
-const hudEl = $('#hud'), timeEl = $('#time'), scoreEl = $('#score'), chipTime = $('#chip-time'), chipScore = $('#chip-score');
+const screens = { title: $('#screen-title'), select: $('#screen-select'), howto: $('#screen-howto'), results: $('#screen-results'), board: $('#screen-board'), share: $('#screen-share') };
+const hudEl = $('#hud'), timeEl = $('#time'), scoreEl = $('#score'), scoreLabelEl = $('#score-label'), chipTime = $('#chip-time'), chipScore = $('#chip-score');
 const announceEl = $('#announce'), coachEl = $('#coach'), muteEl = $('#mute');
 const chipCombo = $('#chip-combo'), comboEl = $('#combo'), pipsEl = $('#pips');
 for (let i = 0; i < TUNING.combo.step; i++) pipsEl.appendChild(document.createElement('i'));
@@ -2780,6 +2815,11 @@ function updateHud(bump) {
   const s = Math.max(0, Math.ceil(G.time));
   timeEl.textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
   scoreEl.textContent = G.score;
+  if (challenge) {                                     // "Beat 87", then "Beaten!" once ahead
+    const won = G.score > challenge.score;
+    scoreLabelEl.textContent = won ? 'Beaten!' : 'Beat ' + challenge.score;
+    chipScore.classList.toggle('won', won);
+  }
   chipTime.classList.toggle('low', G.screen === 'playing' && G.time <= 10);
   if (bump) { chipScore.classList.remove('bump'); void chipScore.offsetWidth; chipScore.classList.add('bump'); }
 }
@@ -2822,7 +2862,6 @@ function showResults() {
   if (isBest) G.best = G.score;
   G.hasRecord = true;
   Best.save(G.best);
-  resetShare();
   const name = PLAYERS[G.char].name;
   $('#res-title').textContent = G.score >= RANKS[0] ? 'Nice work, ' + name + '!' : G.score > 0 ? 'Shift over, ' + name + '!' : 'Rough shift, ' + name + '!';
   $('#res-score').textContent = G.score;
@@ -2835,8 +2874,32 @@ function showResults() {
   $('#res-missed').textContent = G.missed;
   $('#newbest').classList.toggle('hidden', !newBest);
   $('#res-portrait').dataset.char = G.char;
+  const beat = challenge && G.score > challenge.score;
+  if (challenge) {                                     // the dare a colleague sent
+    const who = challenge.name || 'Your colleague', d = G.score - challenge.score;
+    $('#res-title').textContent = d > 0 ? 'You beat ' + (challenge.name || 'them') + ' by ' + d + '!' : d === 0 ? 'Tied with ' + who + '!' : who + ' still leads by ' + -d;
+  }
+  G.lastNewBest = newBest;
+  updateShareButton();
   setScreen('results');
-  if (newBest) Sound.fanfare(); else Sound.select();
+  if (newBest || beat) Sound.fanfare(); else Sound.select();
+}
+
+/* "Challenge a colleague" links: ?vs=DMO&c=FR&s=87 = who dares you, their flag, the score to beat.
+   Only ever shown as a dare: the leaderboard never trusts it. */
+const challenge = (() => {
+  try {
+    const q = new URLSearchParams(location.search), sc = parseInt(q.get('s'), 10);
+    if (!(sc > 0 && sc <= 300)) return null;
+    const vs = (q.get('vs') || '').toUpperCase(), c = (q.get('c') || '').toUpperCase();
+    return { name: /^[A-Z]{3}$/.test(vs) ? vs : '', cc: /^[A-Z]{2}$/.test(c) ? c : '', score: sc };
+  } catch (e) { return null; }
+})();
+if (challenge) {
+  const pill = $('#challenge-pill');
+  pill.innerHTML = (challenge.name ? flagHTML(challenge.cc) + ' <b>' + challenge.name + '</b>' : 'A colleague') + ' challenges you: beat <b>' + challenge.score + '</b> points';
+  pill.classList.remove('hidden');
+  $('#score-label').textContent = 'Beat ' + challenge.score;
 }
 
 /* weekly ranking on the results screen, the board screen, the #1 on the title screen */
@@ -2888,6 +2951,7 @@ lbForm.addEventListener('submit', async (e) => {
     lbText.innerHTML = 'You\'re <b>#' + r.rank + '</b> this week, out of ' + r.players + '!';
     if (r.rank <= 3) { Sound.fanfare(); confetti(L.W / 2, L.H * 0.4, 40); } else Sound.success();
     announceEl.textContent = 'You are number ' + r.rank + ' this week.';
+    updateShareButton();
     loadTop();
   } catch (err) {
     lbSend.disabled = false;
@@ -2908,8 +2972,8 @@ function boardRows(rows) {
     return '<li' + (me ? ' class="me"' : '') + '><span class="rk">' + r.rank + '</span><span class="fl">' + flagHTML(r.country) + '</span><span class="ini">' + esc(r.initials) + '</span><span class="pts">' + r.points + '</span><span class="cb">×' + r.best_combo + '</span></li>';
   }).join('');
 }
-function loadTop() {                           // the #1 on the title screen
-  if (!Board.on) return;
+function loadTop() {                           // the #1 on the title screen (a colleague's dare takes its place)
+  if (!Board.on || challenge) return;
   Board.top(1).then((rows) => {
     topBtn.classList.remove('hidden');
     topText.innerHTML = rows && rows.length ? "This week's #1: " + flagHTML(rows[0].country) + ' <b>' + esc(rows[0].initials) + '</b> · ' + rows[0].points + ' pts' : "Be this week's first champion!";
@@ -2930,30 +2994,196 @@ $('#lb-open').addEventListener('click', () => { Sound.click(); openBoard(); });
 $('#btn-board-back').addEventListener('click', () => { Sound.click(); setScreen(boardFrom); });
 loadTop();
 
-/* share the score: the phone's share sheet on touch devices, the clipboard elsewhere */
-const shareBtn = $('#btn-share'), shareLabel = $('#share-label');
-const SHARE_LABEL = shareLabel.textContent;
-let shareTimer = 0;
+/* sharing: a badge picture, a message that tells the round, and a link that dares a colleague.
+   The button is pushed (yellow, pulsing, with its own words) only at proud moments. */
+const shareBtn = $('#btn-share'), shareLabel = $('#share-label'), againBtn = $('#btn-again');
+const shareImg = $('#share-img'), shareNote = $('#share-note'), shareGo = $('#share-go'), shareDl = $('#share-dl'), shareCopy = $('#share-copy');
+let shareFile = null, shareBlobUrl = '';
 
-function shareText() {
-  const n = G.score;
-  if (posted) return "I'm #" + posted.rank + ' this week on Badge Rush with ' + n + (n === 1 ? ' point' : ' points') + ' in ' + ROUND_TIME + ' seconds (combo ×' + G.bestMult + '). Think you can beat me?';
-  return n + (n === 1 ? ' point' : ' points') + ' in ' + ROUND_TIME + ' seconds, ' + rankFor(n) + ' (combo ×' + G.bestMult + '). Think you can beat that?';
+function proud() {                             // the moment worth telling, if any (best first)
+  if (G.score <= 0) return null;
+  if (challenge && G.score > challenge.score) return { kind: 'challenge', label: 'Tell ' + (challenge.name || 'them') + ' you won', ribbon: 'BEAT ' + (challenge.name || 'THE DARE') };
+  if (posted && posted.rank === 1) return { kind: 'rank1', label: 'Share my #1 badge', ribbon: 'CHAMPION' };
+  if (posted && posted.rank <= 10) return { kind: 'top', label: 'Share my #' + posted.rank + ' badge', ribbon: 'TOP 10' };
+  if (G.lastNewBest) return { kind: 'best', label: 'Share my record', ribbon: 'NEW RECORD' };
+  if (G.bestMult >= TUNING.combo.max) return { kind: 'combo', label: 'Share my ×' + TUNING.combo.max + ' combo', ribbon: '×' + TUNING.combo.max + ' COMBO' };
+  return null;
+}
+function updateShareButton() {
+  const pr = proud();
+  shareBtn.classList.toggle('hot', !!pr);
+  againBtn.classList.toggle('quiet', !!pr);    // at a proud moment, sharing is the main button
+  againBtn.classList.toggle('primary', !pr);
+  shareLabel.textContent = pr ? pr.label : 'Share my badge';
 }
 function shareUrl() {                          // the page address without #test or tracking parameters
   return /^https?:$/.test(location.protocol) ? location.origin + location.pathname : '';
 }
-function resetShare() {
-  clearTimeout(shareTimer);
-  shareBtn.classList.remove('done');
-  shareLabel.textContent = SHARE_LABEL;
+function shareName() { const v = (lbInit.value || player.initials || '').toUpperCase(); return /^[A-Z]{3}$/.test(v) ? v : ''; }
+function shareCountry() { const v = lbCountry.value || player.country || ''; return /^[A-Z]{2}$/.test(v) ? v : ''; }
+function challengeLink() {                     // a link that dares the reader to beat this score
+  const base = shareUrl();
+  if (!base || G.score <= 0) return base;
+  const q = new URLSearchParams(), ini = shareName(), cc = shareCountry();
+  if (ini) q.set('vs', ini);
+  if (cc) q.set('c', cc);
+  q.set('s', String(G.score));
+  return base + '?' + q.toString();
 }
-function shareFeedback(text) {
-  shareLabel.textContent = text;
-  shareBtn.classList.add('done');
-  announceEl.textContent = text;
-  clearTimeout(shareTimer);
-  shareTimer = setTimeout(resetShare, 2200);
+function perHour() {                           // the pace a registration team talks in
+  return G.served > 0 ? (Math.round((G.served * 3600) / ROUND_TIME / 10) * 10).toLocaleString('en-US') : '';
+}
+function roundFacts() {                        // what happened at the desk, best stories first
+  const ins = G.log.filter((e) => !e.left), n = (t) => ins.filter((e) => e.type === t).length;
+  const f = [], vip = n('VIP'), sp = n('SPEAKER') + n('PRESS'), jams = G.jamsFixed || 0, names = G.nameDone || 0;
+  if (vip) f.push(vip + (vip === 1 ? ' VIP' : ' VIPs') + ' served');
+  if (jams) f.push(jams + (jams === 1 ? ' printer jam' : ' printer jams') + ' fixed');
+  if (G.missed === 0 && G.served >= 5) f.push('zero guests lost');
+  if (names) f.push(names + (names === 1 ? ' forgotten QR code' : ' forgotten QR codes') + ' sorted out');
+  if (sp) f.push(sp + ' speakers & press checked in');
+  return f.slice(0, 3);
+}
+function shareText() {
+  const n = G.score, pts = n + (n === 1 ? ' point' : ' points'), pr = proud(), facts = roundFacts(), pace = perHour();
+  let head;
+  if (pr && pr.kind === 'challenge') head = 'I just beat ' + (challenge.name ? challenge.name + (challenge.cc ? ' ' + flagEmoji(challenge.cc) : '') : 'my colleague') + ' at Badge Rush: ' + n + ' vs ' + challenge.score + ' points!';
+  else if (posted && posted.rank === 1) head = "I'm #1 this week on Badge Rush with " + pts + '!';
+  else if (posted) head = "I'm #" + posted.rank + ' this week on Badge Rush with ' + pts + '.';
+  else if (pr && pr.kind === 'best') head = 'New personal best on Badge Rush: ' + pts + '.';
+  else head = pts + ' on Badge Rush: ' + rankFor(n) + ', combo ×' + G.bestMult + '.';
+  const lines = [head];
+  const story = facts.length ? facts.join(', ').replace(/^./, (ch) => ch.toUpperCase()) + '.' : '';
+  const paceLine = pace ? "At this pace I'd check in " + pace + ' guests an hour.' : '';
+  if (story || paceLine) lines.push((story + ' ' + paceLine).trim());
+  const link = challengeLink();
+  if (link) lines.push('Think you can beat me? ' + link);
+  lines.push('Tag the colleague who runs your registration desk.');
+  return lines.join('\n\n');
+}
+
+// The badge: 1080 × 1350, the portrait size feeds show largest.
+function drawShareBadge() {
+  const W = 1080, H = 1350, cx = W / 2;
+  const cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const c = cv.getContext('2d');
+  c.lineJoin = 'round'; c.lineCap = 'round'; c.textAlign = 'center'; c.textBaseline = 'middle';
+  const sky = c.createLinearGradient(0, 0, 0, H); sky.addColorStop(0, '#9AD8FF'); sky.addColorStop(1, '#4FA6EC');
+  c.fillStyle = sky; c.fillRect(0, 0, W, H);
+  let seed = 7 + G.score * 131 + G.served * 17;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const cols = ['#E5352B', '#FFCC1E', '#3DB84B', '#8A4FE0', '#FFFFFF', '#FF7FB0'];
+  for (let i = 0; i < 90; i++) {                 // confetti around the card
+    const x = rnd() * W, y = rnd() * H;
+    if (x > 110 && x < W - 110 && y > 120 && y < 1290) continue;
+    c.save(); c.translate(x, y); c.rotate(rnd() * TAU);
+    const w = 16 + rnd() * 16, h = 9 + rnd() * 9;
+    c.fillStyle = INK; c.fillRect(-w / 2 - 3, -h / 2 - 3, w + 6, h + 6);
+    c.fillStyle = cols[i % cols.length]; c.fillRect(-w / 2, -h / 2, w, h); c.restore();
+  }
+  const x0 = 140, y0 = 190, w = W - 280, h = 1080, r = 56;
+  // lanyard and clip
+  cord(c, [cx - 330, -40, cx - 44, y0 - 22], 48, '#E5352B', 6);
+  cord(c, [cx + 330, -40, cx + 44, y0 - 22], 48, '#B8241D', 6);
+  rr(c, cx - 66, y0 - 60, 132, 82, 22); inked(c, '#FFCC1E', 7);
+  c.fillStyle = INK; rr(c, cx - 32, y0 - 36, 64, 26, 13); c.fill();
+  // the card
+  c.fillStyle = 'rgba(27,27,38,.32)'; rr(c, x0 + 8, y0 + 24, w, h, r); c.fill();
+  rr(c, x0, y0, w, h, r); c.fillStyle = '#FFFFFF'; c.fill();
+  c.save(); rr(c, x0, y0, w, h, r); c.clip();
+  c.fillStyle = '#E5352B'; c.fillRect(x0, y0, w, 150); c.fillStyle = INK; c.fillRect(x0, y0 + 146, w, 12);
+  c.restore();
+  rr(c, x0, y0, w, h, r); c.strokeStyle = INK; c.lineWidth = 14; c.stroke();
+  c.fillStyle = INK; rr(c, cx - 80, y0 + 24, 160, 28, 14); c.fill();
+  c.fillStyle = '#FFFFFF'; c.font = font(900, 46); spaced(c, 'ALL ACCESS', cx, y0 + 102, 14);
+  // the game's logo
+  let y = y0 + 178;
+  const logo = document.querySelector('.logo-img');
+  if (logo && logo.naturalWidth) { const lw = 420, lh = (lw * logo.naturalHeight) / logo.naturalWidth; c.drawImage(logo, cx - lw / 2, y, lw, lh); y += lh; } else y += 335;
+  // initials (or the character's name) and flag
+  const name = shareName() || PLAYERS[G.char].name.toUpperCase(), cc = shareCountry();
+  y += 62;
+  c.font = font(900, 104);
+  const sp = 12; let nameW = -sp; for (const ch of name) nameW += c.measureText(ch).width + sp;
+  const flagW = cc ? 104 : 0, gap = cc ? 30 : 0, total = nameW + gap + flagW;
+  c.fillStyle = INK; spaced(c, name, cx - total / 2 + nameW / 2, y, sp);
+  if (cc) {
+    const fx = cx + total / 2 - flagW / 2;
+    if (FLAGS_OK) { c.font = '92px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif'; c.fillText(flagEmoji(cc), fx, y + 4); }
+    else { rr(c, fx - 50, y - 34, 100, 68, 14); c.fillStyle = INK; c.fill(); c.fillStyle = '#FFFFFF'; c.font = font(900, 44); c.fillText(cc, fx, y + 2); }
+  }
+  // rank title
+  y += 96;
+  const title = rankFor(G.score).toUpperCase();
+  c.font = font(900, 38);
+  let tw = -3; for (const ch of title) tw += c.measureText(ch).width + 3;
+  rr(c, cx - tw / 2 - 40, y - 33, tw + 80, 66, 33); inked(c, '#2B6BE4', 6);
+  c.fillStyle = '#FFFFFF'; spaced(c, title, cx, y + 2, 3);
+  // the score
+  y += 118;
+  c.font = font(900, 140); c.fillStyle = '#FFCC1E'; spaced(c, String(G.score), cx, y, 6, 20);
+  y += 92;
+  c.font = font(800, 32); c.fillStyle = '#4B4F6B'; spaced(c, G.score === 1 ? 'POINT IN 45 SECONDS' : 'POINTS IN ' + ROUND_TIME + ' SECONDS', cx, y, 6);
+  // chips: rank this week, combo, pace
+  y += 72;
+  const chips = [];
+  if (posted) chips.push(['#' + posted.rank + ' THIS WEEK', '#FFE7B8']);
+  chips.push(['COMBO ×' + G.bestMult, '#FFF3D6']);
+  const pace = perHour();
+  if (pace) chips.push([pace + ' GUESTS / HOUR', '#C9FFD3']);
+  c.font = font(900, 30);
+  const cw = chips.map((ch) => c.measureText(ch[0]).width + 44), cgap = 16;
+  let totalW = cw.reduce((a, z) => a + z, 0) + cgap * (chips.length - 1), sc = Math.min(1, (w - 80) / totalW);
+  let x = cx - (totalW * sc) / 2;
+  c.save(); c.translate(cx, y); c.scale(sc, sc); c.translate(-cx, -y);
+  x = cx - totalW / 2;
+  chips.forEach((ch, i) => {
+    rr(c, x, y - 29, cw[i], 58, 29); inked(c, ch[1], 5);
+    c.fillStyle = INK; c.fillText(ch[0], x + cw[i] / 2, y + 2);
+    x += cw[i] + cgap;
+  });
+  c.restore();
+  // the story of the round
+  const facts = roundFacts();
+  if (facts.length) {
+    y += 70;
+    const story = facts.join(' · ');
+    c.fillStyle = '#4B4F6B'; fitFont(c, story, 800, 32, w - 90); c.fillText(story, cx, y);
+  }
+  // the proud moment, as a sticker on the card
+  const pr = proud();
+  if (pr) {
+    c.save(); c.translate(x0 + w - 40, y0 + 200); c.rotate(0.09);
+    c.font = font(900, 36);
+    let rw = -4; for (const ch of pr.ribbon) rw += c.measureText(ch).width + 4;
+    rr(c, -rw - 56, -36, rw + 76, 72, 14); inked(c, '#E5352B', 6);
+    c.fillStyle = '#FFFFFF'; spaced(c, pr.ribbon, -rw / 2 - 18, 2, 4);
+    c.restore();
+  }
+  // the dare, under the card
+  c.fillStyle = '#FFFFFF'; c.font = font(900, 40);
+  spaced(c, 'CAN YOU BEAT ME?', cx, H - 52, 4, 12);
+  return cv;
+}
+
+function openShare() {
+  setScreen('share');
+  shareNote.textContent = 'Preparing your badge…';
+  shareImg.removeAttribute('src');
+  [shareGo, shareDl, shareCopy].forEach((b) => { b.disabled = true; });
+  shareGo.classList.add('hidden');
+  const cv = drawShareBadge();
+  cv.toBlob((blob) => {
+    if (!blob) { shareNote.textContent = 'Could not draw the badge, sorry'; return; }
+    if (shareBlobUrl) URL.revokeObjectURL(shareBlobUrl);
+    shareBlobUrl = URL.createObjectURL(blob);
+    shareFile = new File([blob], 'badge-rush-' + G.score + '.png', { type: 'image/png' });
+    shareImg.src = shareBlobUrl;
+    let canFiles = false;
+    try { canFiles = !!(navigator.share && navigator.canShare && navigator.canShare({ files: [shareFile] })); } catch (e) { canFiles = false; }
+    shareGo.classList.toggle('hidden', !canFiles);
+    [shareGo, shareDl, shareCopy].forEach((b) => { b.disabled = false; });
+    shareNote.textContent = canFiles ? 'Share it with your story and your dare link.' : 'Download it, copy the text, and post both.';
+  }, 'image/png');
 }
 function copyText(text) {
   if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
@@ -2968,16 +3198,30 @@ function copyText(text) {
     if (ok) resolve(); else reject(new Error('copy failed'));
   });
 }
-async function shareScore() {
-  const text = shareText(), url = shareUrl();
-  const touch = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-  if (touch && navigator.share) {
-    try { await navigator.share(url ? { title: 'Badge Rush', text, url } : { title: 'Badge Rush', text }); return; }
-    catch (e) { if (e && e.name === 'AbortError') return; }   // closed the share sheet: nothing to do
-  }
-  try { await copyText(url ? text + ' ' + url : text); shareFeedback('Copied!'); }
-  catch (e) { shareFeedback('Could not copy'); }
-}
+shareGo.addEventListener('click', () => {
+  if (!shareFile) return;
+  const text = shareText();
+  copyText(text).catch(() => {});              // some apps (LinkedIn) drop the text: it is ready to paste
+  navigator.share({ files: [shareFile], text, title: 'Badge Rush' })
+    .then(() => { shareNote.textContent = 'Shared! The text is copied too, in case the app left it out.'; })
+    .catch((e) => { if (!e || e.name !== 'AbortError') shareNote.textContent = 'Sharing failed: use Download and Copy text instead.'; });
+});
+shareDl.addEventListener('click', () => {
+  if (!shareBlobUrl) return;
+  Sound.click();
+  const a = document.createElement('a'); a.href = shareBlobUrl; a.download = shareFile.name;
+  document.body.appendChild(a); a.click(); a.remove();
+  copyText(shareText())
+    .then(() => { shareNote.textContent = 'Badge downloaded and text copied: add both to your post.'; })
+    .catch(() => { shareNote.textContent = 'Badge downloaded.'; });
+});
+shareCopy.addEventListener('click', () => {
+  Sound.click();
+  copyText(shareText())
+    .then(() => { shareNote.textContent = 'Text and dare link copied.'; announceEl.textContent = 'Copied'; })
+    .catch(() => { shareNote.textContent = 'Could not copy, sorry'; });
+});
+$('#share-back').addEventListener('click', () => { Sound.click(); setScreen('results'); });
 
 /* character portraits (select screen and results) */
 function sizePortraits() {
@@ -3033,7 +3277,7 @@ for (const card of document.querySelectorAll('.card')) {
 }
 $('#btn-go').addEventListener('click', () => { Sound.click(); G.howtoSeen = true; startCountdown(); });
 $('#btn-again').addEventListener('click', () => { Sound.click(); setupRound(); startCountdown(); });
-shareBtn.addEventListener('click', () => { Sound.click(); shareScore(); });
+shareBtn.addEventListener('click', () => { Sound.click(); openShare(); });
 $('#btn-change').addEventListener('click', () => {
   Sound.click();
   closeSearch();
